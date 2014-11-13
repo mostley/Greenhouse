@@ -2,14 +2,16 @@ VPATH += ../shared
 INCLUDEPATH += ../shared
 
 HEADERS       = glwidget.h \
-                window.h \
                 qtlogo.h \
-    qtlogo.h
+    qtlogo.h \
+    mainwindow.h \
+    ComputeAlgorithm.h \
+    Blob.h
 SOURCES       = glwidget.cpp \
                 main.cpp \
-                window.cpp \
                 qtlogo.cpp \
-    qtlogo.cpp
+    qtlogo.cpp \
+    mainwindow.cpp
 QT           += opengl widgets
 
 # install
