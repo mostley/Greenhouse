@@ -3,6 +3,7 @@
 
 #include <QWidget>
 #include <QMainWindow>
+#include "ComputeAlgorithm.h"
 
 QT_BEGIN_NAMESPACE
 class QAction;
@@ -34,6 +35,7 @@ private slots:
 
 private:
     Ui::MainWindow *ui;
+    ComputeAlgorithm *algorithm;
 };
 
 #endif

@@ -1,10 +1,13 @@
 #ifndef COMPUTEALGORITHM_H
 #define COMPUTEALGORITHM_H
 
+#include <QString>
+#include "Blob.h"
+
 class ParameterData
 {
 public:
-    ParameterData(QString name, QString value) {
+    ParameterData(QString name, float value) {
         this->name = name;
         this->value = value;
     }

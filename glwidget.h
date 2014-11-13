@@ -2,6 +2,9 @@
 #define GLWIDGET_H
 
 #include <QGLWidget>
+#include <QTimer>
+
+#include "marching.h"
 
 class QtModel;
 
@@ -41,6 +44,8 @@ private:
     QPoint lastPos;
     QColor qtGreen;
     QColor qtPurple;
+
+    Marching* marching;
 };
 
 #endif

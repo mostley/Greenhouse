@@ -5,11 +5,13 @@ HEADERS       = glwidget.h \
     mainwindow.h \
     ComputeAlgorithm.h \
     Blob.h \
-    qtmodel.h
+    qtmodel.h \
+    marching.h
 SOURCES       = glwidget.cpp \
                 main.cpp \
     mainwindow.cpp \
-    qtmodel.cpp
+    qtmodel.cpp \
+    marching.cpp
 QT           += opengl widgets
 
 # install
