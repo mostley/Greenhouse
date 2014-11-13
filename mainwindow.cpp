@@ -2,89 +2,35 @@
 
 #include "glwidget.h"
 #include "mainwindow.h"
+#include "ui_mainwindow.h"
 
-MainWindow::MainWindow()
+MainWindow::MainWindow(QWidget *parent) :
+    QMainWindow(parent),
+    ui(new Ui::MainWindow)
 {
-    QWidget *widget = new QWidget;
-    setCentralWidget(widget);
+    ui->setupUi(this);
 
-    QWidget *topFiller = new QWidget;
-    topFiller->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    connect(ui->xSlider, SIGNAL(valueChanged(int)), ui->glFrame, SLOT(setXRotation(int)));
+    connect(ui->glFrame, SIGNAL(xRotationChanged(int)), ui->xSlider, SLOT(setValue(int)));
+    connect(ui->ySlider, SIGNAL(valueChanged(int)), ui->glFrame, SLOT(setYRotation(int)));
+    connect(ui->glFrame, SIGNAL(yRotationChanged(int)), ui->ySlider, SLOT(setValue(int)));
+    connect(ui->zSlider, SIGNAL(valueChanged(int)), ui->glFrame, SLOT(setZRotation(int)));
+    connect(ui->glFrame, SIGNAL(zRotationChanged(int)), ui->zSlider, SLOT(setValue(int)));
 
-    QWidget *bottomFiller = new QWidget;
-    bottomFiller->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    connect(this->ui->actionAbout, SIGNAL(triggered()), this, SLOT(about()));
+    connect(this->ui->actionExit, SIGNAL(triggered()), this, SLOT(close()));
+}
 
-    glWidget = new GLWidget;
-
-    xSlider = createSlider();
-    ySlider = createSlider();
-    zSlider = createSlider();
-
-    connect(xSlider, SIGNAL(valueChanged(int)), glWidget, SLOT(setXRotation(int)));
-    connect(glWidget, SIGNAL(xRotationChanged(int)), xSlider, SLOT(setValue(int)));
-    connect(ySlider, SIGNAL(valueChanged(int)), glWidget, SLOT(setYRotation(int)));
-    connect(glWidget, SIGNAL(yRotationChanged(int)), ySlider, SLOT(setValue(int)));
-    connect(zSlider, SIGNAL(valueChanged(int)), glWidget, SLOT(setZRotation(int)));
-    connect(glWidget, SIGNAL(zRotationChanged(int)), zSlider, SLOT(setValue(int)));
-
-    QHBoxLayout *mainLayout = new QHBoxLayout;
-    mainLayout->addWidget(glWidget);
-    mainLayout->addWidget(xSlider);
-    mainLayout->addWidget(ySlider);
-    mainLayout->addWidget(zSlider);
-
-    xSlider->setValue(15 * 16);
-    ySlider->setValue(345 * 16);
-    zSlider->setValue(0 * 16);
-
-    QWidget *centerWidget = new QWidget;
-    centerWidget->setLayout(mainLayout);
-
-
-    QVBoxLayout *layout = new QVBoxLayout;
-    layout->setMargin(5);
-    layout->addWidget(topFiller);
-    layout->addWidget(centerWidget);
-    layout->addWidget(bottomFiller);
-    widget->setLayout(layout);
-
-    createActions();
-    createMenus();
-
-    setMinimumSize(160, 160);
-    resize(480, 320);
-
-    setWindowTitle(tr("Greenhouse"));
+MainWindow::~MainWindow()
+{
+    delete ui;
 }
 
 void MainWindow::contextMenuEvent(QContextMenuEvent *event)
 {
     QMenu menu(this);
-    menu.addAction(aboutAct);
+    menu.addAction(this->ui->actionAbout);
     menu.exec(event->globalPos());
-}
-
-void MainWindow::createActions()
-{
-    aboutAct = new QAction(tr("&About"), this);
-    aboutAct->setStatusTip(tr("Show the application's About box"));
-    connect(aboutAct, SIGNAL(triggered()), this, SLOT(about()));
-
-    exitAct = new QAction(tr("E&xit"), this);
-    exitAct->setShortcuts(QKeySequence::Quit);
-    exitAct->setStatusTip(tr("Exit the application"));
-    connect(exitAct, SIGNAL(triggered()), this, SLOT(close()));
-}
-
-QSlider *MainWindow::createSlider()
-{
-    QSlider *slider = new QSlider(Qt::Vertical);
-    slider->setRange(0, 360 * 16);
-    slider->setSingleStep(16);
-    slider->setPageStep(15 * 16);
-    slider->setTickInterval(15 * 16);
-    slider->setTickPosition(QSlider::TicksRight);
-    return slider;
 }
 
 void MainWindow::keyPressEvent(QKeyEvent *e)
@@ -93,13 +39,6 @@ void MainWindow::keyPressEvent(QKeyEvent *e)
         close();
     else
         QWidget::keyPressEvent(e);
-}
-
-void MainWindow::createMenus()
-{
-    fileMenu = menuBar()->addMenu(tr("&File"));
-    fileMenu->addAction(aboutAct);
-    fileMenu->addAction(exitAct);
 }
 
 void MainWindow::about()

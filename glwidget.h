@@ -3,7 +3,7 @@
 
 #include <QGLWidget>
 
-class QtLogo;
+class QtModel;
 
 class GLWidget : public QGLWidget
 {
@@ -34,7 +34,7 @@ protected:
     void mouseMoveEvent(QMouseEvent *event);
 
 private:
-    QtLogo *logo;
+    QtModel *model;
     int xRot;
     int yRot;
     int zRot;

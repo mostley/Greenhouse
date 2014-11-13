@@ -2,16 +2,14 @@ VPATH += ../shared
 INCLUDEPATH += ../shared
 
 HEADERS       = glwidget.h \
-                qtlogo.h \
-    qtlogo.h \
     mainwindow.h \
     ComputeAlgorithm.h \
-    Blob.h
+    Blob.h \
+    qtmodel.h
 SOURCES       = glwidget.cpp \
                 main.cpp \
-                qtlogo.cpp \
-    qtlogo.cpp \
-    mainwindow.cpp
+    mainwindow.cpp \
+    qtmodel.cpp
 QT           += opengl widgets
 
 # install
@@ -23,3 +21,6 @@ contains(QT_CONFIG, opengles.) {
         warning("Qt was built with ANGLE, which provides only OpenGL ES 2.0 on top of DirectX 9.0c")
     error("This example requires Qt to be configured with -opengl desktop")
 }
+
+FORMS += \
+    mainwindow.ui

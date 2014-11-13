@@ -1,4 +1,4 @@
-#include "qtlogo.h"
+#include "QtModel.h"
 
 #include <QGLWidget>
 #include <QMatrix4x4>
@@ -279,27 +279,26 @@ RectTorus::RectTorus(Geometry *g, qreal iRad, qreal oRad, qreal depth, int k)
     parts << front << back << is << os;
 }
 
-QtLogo::QtLogo(QObject *parent, int divisions, qreal scale)
+QtModel::QtModel(QObject *parent, int divisions, qreal scale)
     : QObject(parent)
     , geom(new Geometry())
 {
     buildGeometry(divisions, scale);
 }
 
-QtLogo::~QtLogo()
+QtModel::~QtModel()
 {
     qDeleteAll(parts);
     delete geom;
 }
 
-void QtLogo::setColor(QColor c)
+void QtModel::setColor(QColor c)
 {
     for (int i = 0; i < parts.count(); ++i)
         qSetColor(parts[i]->faceColor, c);
 }
 
-//! [3]
-void QtLogo::buildGeometry(int divisions, qreal scale)
+void QtModel::buildGeometry(int divisions, qreal scale)
 {
     qreal cw = cross_width * scale;
     qreal bt = bar_thickness * scale;
@@ -323,15 +322,16 @@ void QtLogo::buildGeometry(int divisions, qreal scale)
     geom->finalize();
 }
 
-void QtLogo::draw() const
+void QtModel::draw() const
 {
     geom->loadArrays();
 
     glEnableClientState(GL_VERTEX_ARRAY);
     glEnableClientState(GL_NORMAL_ARRAY);
 
-    for (int i = 0; i < parts.count(); ++i)
+    for (int i = 0; i < parts.count(); ++i) {
         parts[i]->draw();
+    }
 
     glDisableClientState(GL_VERTEX_ARRAY);
     glDisableClientState(GL_NORMAL_ARRAY);

@@ -4,14 +4,26 @@
 class ParameterData
 {
 public:
+    ParameterData(QString name, QString value) {
+        this->name = name;
+        this->value = value;
+    }
+
     QString name;
     float value;
+};
+
+class ContainerEvaluator
+{
+public:
+    ContainerEvaluator();
+    bool Contained(QVector3D position);
 };
 
 class ComputeAlgorithm
 {
 public:
-    void SetContainer(bool (*containerCallback)(QVector3D));
+    void SetContainer(ContainerEvaluator containerEvaluator);
     QVector<ParameterData> GetParameters();
     void SetParameters(QVector<ParameterData> parameterData);
     QVector<Blob> Calculate();

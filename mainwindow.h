@@ -13,12 +13,17 @@ QT_END_NAMESPACE
 
 class GLWidget;
 
+namespace Ui {
+class MainWindow;
+}
+
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
 
 public:
-    MainWindow();
+    explicit MainWindow(QWidget *parent = 0);
+    ~MainWindow();
 
 protected:
     void contextMenuEvent(QContextMenuEvent *event);
@@ -28,20 +33,7 @@ private slots:
     void about();
 
 private:
-    void createActions();
-    void createMenus();
-
-    QMenu *fileMenu;
-
-    QSlider *createSlider();
-
-    GLWidget *glWidget;
-    QSlider *xSlider;
-    QSlider *ySlider;
-    QSlider *zSlider;
-
-    QAction *exitAct;
-    QAction *aboutAct;
+    Ui::MainWindow *ui;
 };
 
 #endif
