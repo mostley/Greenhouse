@@ -102,7 +102,7 @@ void GLWidget::initializeGL()
 
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL); // or: GL_LINE
 
-    static GLfloat lightPosition[4] = { 0.5, 5.0, 7.0, -1.0 };
+    static GLfloat lightPosition[4] = { 0, 0, 1.0, 0.0 };//{ 0.5, 5.0, 7.0, 1.0 };
     glLightfv(GL_LIGHT0, GL_POSITION, lightPosition);
 
     glLightfv( GL_LIGHT0, GL_AMBIENT,  afPropertiesAmbient);
@@ -122,15 +122,10 @@ void GLWidget::initializeGL()
 
 void GLWidget::paintGL()
 {
-    //glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    //glLoadIdentity();
+    /*this->model->draw();*/
 
-    /*glTranslatef(0.0, 0.0, -10.0);
-    glRotatef(xRot / 16.0, 1.0, 0.0, 0.0);
-    glRotatef(yRot / 16.0, 0.0, 1.0, 0.0);
-    glRotatef(zRot / 16.0, 0.0, 0.0, 1.0);
-    this->model->draw();*/
-
+    this->marching->Pitch = -xRot / 16.0;
+    this->marching->Yaw = yRot / 16.0;
     this->marching->Draw();
 }
 

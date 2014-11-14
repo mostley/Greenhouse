@@ -379,7 +379,7 @@ int a2iTriangleConnectionTable[256][16] =
 
 Marching::Marching()
 {
-    this->iDataSetSize = 32;
+    this->iDataSetSize = 64;
     this->fStepSize = 1.0f/iDataSetSize;
     this->fTargetValue = 48.0f;
     this->fTime = 0.0f;
@@ -557,7 +557,7 @@ void Marching::MarchCube1(float fX, float fY, float fZ, float fScale)
 
             asEdgeVertex[iEdge].setX(fX + (a2fVertexOffset[ a2iEdgeConnection[iEdge][0] ][0]  +  fOffset * a2fEdgeDirection[iEdge][0]) * fScale);
             asEdgeVertex[iEdge].setY(fY + (a2fVertexOffset[ a2iEdgeConnection[iEdge][0] ][1]  +  fOffset * a2fEdgeDirection[iEdge][1]) * fScale);
-            asEdgeVertex[iEdge].setY(fZ + (a2fVertexOffset[ a2iEdgeConnection[iEdge][0] ][2]  +  fOffset * a2fEdgeDirection[iEdge][2]) * fScale);
+            asEdgeVertex[iEdge].setZ(fZ + (a2fVertexOffset[ a2iEdgeConnection[iEdge][0] ][2]  +  fOffset * a2fEdgeDirection[iEdge][2]) * fScale);
 
             this->GetNormal(asEdgeNorm[iEdge], asEdgeVertex[iEdge].x(), asEdgeVertex[iEdge].y(), asEdgeVertex[iEdge].z());
         }
@@ -695,45 +695,39 @@ void Marching::MarchingCubes()
 {
     int iX, iY, iZ;
     for(iX = 0; iX < iDataSetSize; iX++)
-    for(iY = 0; iY < iDataSetSize; iY++)
-    for(iZ = 0; iZ < iDataSetSize; iZ++)
     {
-        (this->*MarchCube)(iX*fStepSize, iY*fStepSize, iZ*fStepSize, fStepSize);
+        for(iY = 0; iY < iDataSetSize; iY++)
+        {
+            for(iZ = 0; iZ < iDataSetSize; iZ++)
+            {
+                (this->*MarchCube)(iX*fStepSize, iY*fStepSize, iZ*fStepSize, fStepSize);
+            }
+        }
     }
 }
 
 void Marching::Draw()
 {
-    static float fPitch = 0.0f;
-    static float fYaw   = 0.0f;
-    static float fTime = 0.0f;
-
     glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 
     glPushMatrix();
 
     if(bSpin)
     {
-        //fPitch += 4.0f;
-        //fYaw   += 2.5f;
+        //Pitch += 4.0f;
+        //Yaw   += 2.5f;
     }
     if(bMove)
     {
-        fTime  += 0.025f;
+        time  += 0.025f;
     }
 
-    this->SetTime(fTime);
+    this->SetTime(time);
 
     glTranslatef(0.0, 0.0, -1.0);
-    glRotatef( -fPitch, 1.0, 0.0, 0.0);
+    glRotatef( -Pitch, 1.0, 0.0, 0.0);
     glRotatef(     0.0, 0.0, 1.0, 0.0);
-    glRotatef(    fYaw, 0.0, 0.0, 1.0);
-
-    /*glPushAttrib(GL_LIGHTING_BIT);
-            glDisable(GL_LIGHTING);
-            glColor3f(1.0, 1.0, 1.0);
-            //glutWireCube(1.0);
-    glPopAttrib();*/
+    glRotatef(    Yaw, 0.0, 0.0, 1.0);
 
 
     glPushMatrix();

@@ -29,6 +29,7 @@ private:
     bool bSpin;
     bool bMove;
     bool bLight;
+    float time = 0.0f;
 
     void GetNormal(QVector3D &rfNormal, float fX, float fY, float fZ);
     float Sample1(float fX, float fY, float fZ);
@@ -41,6 +42,9 @@ private:
     void MarchTetrahedron(QVector3D *pasTetrahedronPosition, float *pafTetrahedronValue);
 
 public:
+    float Pitch = 0.0f;
+    float Yaw   = 0.0f;
+
     Marching();
     void SetTime(float fTime);
     void MarchingCubes();
