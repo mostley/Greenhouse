@@ -102,7 +102,7 @@ void GLWidget::initializeGL()
 
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL); // or: GL_LINE
 
-    static GLfloat lightPosition[4] = { 0.5, 5.0, 7.0, 1.0 };
+    static GLfloat lightPosition[4] = { 0.5, 5.0, 7.0, -1.0 };
     glLightfv(GL_LIGHT0, GL_POSITION, lightPosition);
 
     glLightfv( GL_LIGHT0, GL_AMBIENT,  afPropertiesAmbient);
@@ -149,7 +149,7 @@ void GLWidget::resizeGL(int width, int height)
     glMatrixMode(GL_MODELVIEW);*/
 
 
-    float fAspect, halfWorldSize = (1.4142135623730950488016887242097f/2);
+    float aspect, halfWorldSize = (1.4142135623730950488016887242097f/2);
 
     glViewport( 0, 0, width, height );
     glMatrixMode (GL_PROJECTION);
@@ -157,18 +157,32 @@ void GLWidget::resizeGL(int width, int height)
 
     if(width <= height)
     {
-        fAspect = (float)height / (float)width;
-        glOrtho(-halfWorldSize, halfWorldSize, -halfWorldSize*fAspect,
-                halfWorldSize*fAspect, -10*halfWorldSize, 10*halfWorldSize);
+        aspect = (float)height / (float)width;
+        glOrtho(-halfWorldSize, halfWorldSize, -halfWorldSize*aspect,
+                halfWorldSize*aspect, -10*halfWorldSize, 10*halfWorldSize);
     }
     else
     {
-        fAspect = (float)width / (float)height;
-        glOrtho(-halfWorldSize*fAspect, halfWorldSize*fAspect, -halfWorldSize,
+        aspect = (float)width / (float)height;
+        glOrtho(-halfWorldSize*aspect, halfWorldSize*aspect, -halfWorldSize,
                 halfWorldSize, -10*halfWorldSize, 10*halfWorldSize);
     }
 
+    //this->perspective(60, 4.0f/3.0f, 0.1f, 100.0f);
+
     glMatrixMode( GL_MODELVIEW );
+}
+
+void GLWidget::perspective(GLdouble fovy, GLdouble aspect, GLdouble zNear, GLdouble zFar)
+{
+    GLdouble xmin, xmax, ymin, ymax;
+
+    ymax = zNear * tan( fovy * M_PI / 360.0 );
+    ymin = -ymax;
+    xmin = ymin * aspect;
+    xmax = ymax * aspect;
+
+    glFrustum( xmin, xmax, ymin, ymax, zNear, zFar );
 }
 
 void GLWidget::mousePressEvent(QMouseEvent *event)

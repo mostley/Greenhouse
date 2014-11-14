@@ -46,6 +46,8 @@ private:
     QColor qtPurple;
 
     Marching* marching;
+
+    void perspective(GLdouble fovy, GLdouble aspect, GLdouble zNear, GLdouble zFar);
 };
 
 #endif

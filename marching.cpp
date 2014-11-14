@@ -379,7 +379,7 @@ int a2iTriangleConnectionTable[256][16] =
 
 Marching::Marching()
 {
-    this->iDataSetSize = 16;
+    this->iDataSetSize = 32;
     this->fStepSize = 1.0f/iDataSetSize;
     this->fTargetValue = 48.0f;
     this->fTime = 0.0f;
@@ -390,51 +390,6 @@ Marching::Marching()
 
     this->Sample = &Marching::Sample1; // or: Sample2, or Sample 3
     this->MarchCube = &Marching::MarchCube1; // or MarchCube2
-}
-
-void Marching::Draw()
-{
-    static float fPitch = 0.0f;
-    static float fYaw   = 0.0f;
-    static float fTime = 0.0f;
-
-    glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
-
-    glPushMatrix();
-
-    if(bSpin)
-    {
-        fPitch += 4.0f;
-        fYaw   += 2.5f;
-    }
-    if(bMove)
-    {
-        fTime  += 0.025f;
-    }
-
-    this->SetTime(fTime);
-
-    glTranslatef(0.0, 0.0, -1.0);
-    glRotatef( -fPitch, 1.0, 0.0, 0.0);
-    glRotatef(     0.0, 0.0, 1.0, 0.0);
-    glRotatef(    fYaw, 0.0, 0.0, 1.0);
-
-    glPushAttrib(GL_LIGHTING_BIT);
-            glDisable(GL_LIGHTING);
-            glColor3f(1.0, 1.0, 1.0);
-            //glutWireCube(1.0);
-    glPopAttrib();
-
-
-    glPushMatrix();
-    glTranslatef(-0.5, -0.5, -0.5);
-    glBegin(GL_TRIANGLES);
-    this->MarchingCubes();
-    glEnd();
-    glPopMatrix();
-
-
-    glPopMatrix();
 }
 
 //GetOffset finds the approximate point of intersection of the surface
@@ -745,4 +700,49 @@ void Marching::MarchingCubes()
     {
         (this->*MarchCube)(iX*fStepSize, iY*fStepSize, iZ*fStepSize, fStepSize);
     }
+}
+
+void Marching::Draw()
+{
+    static float fPitch = 0.0f;
+    static float fYaw   = 0.0f;
+    static float fTime = 0.0f;
+
+    glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
+
+    glPushMatrix();
+
+    if(bSpin)
+    {
+        //fPitch += 4.0f;
+        //fYaw   += 2.5f;
+    }
+    if(bMove)
+    {
+        fTime  += 0.025f;
+    }
+
+    this->SetTime(fTime);
+
+    glTranslatef(0.0, 0.0, -1.0);
+    glRotatef( -fPitch, 1.0, 0.0, 0.0);
+    glRotatef(     0.0, 0.0, 1.0, 0.0);
+    glRotatef(    fYaw, 0.0, 0.0, 1.0);
+
+    /*glPushAttrib(GL_LIGHTING_BIT);
+            glDisable(GL_LIGHTING);
+            glColor3f(1.0, 1.0, 1.0);
+            //glutWireCube(1.0);
+    glPopAttrib();*/
+
+
+    glPushMatrix();
+    glTranslatef(-0.5, -0.5, -0.5);
+    glBegin(GL_TRIANGLES);
+    this->MarchingCubes();
+    glEnd();
+    glPopMatrix();
+
+
+    glPopMatrix();
 }
