@@ -3,6 +3,7 @@
 #include "glwidget.h"
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+#include "triangle.h"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -45,4 +46,52 @@ void MainWindow::about()
 {
     QMessageBox::about(this, tr("About Menu"),
             tr("<b>Greenhouse</b> - Sculpting tool able to generate organic 3D models"));
+}
+
+void MainWindow::on_button_export_clicked()
+{
+    QVector<Triangle*>* triangles = this->createSample1();
+
+    QString homePath = QStandardPaths::writableLocation(( QStandardPaths::HomeLocation));
+    QString fileName = QFileDialog::getSaveFileName(this,
+                                                    tr("Export to STL File"),
+                                                    homePath,
+                                                    tr("STL (*.stl)"));
+
+    if (fileName.isEmpty()) {
+        return;
+    }
+
+    this->stlWriter->writeStl("E:\\dump\\test.stl", triangles, false);
+
+    deleteTrianglesVector(triangles);
+}
+
+QVector<Triangle*> *MainWindow::createSample1()
+{
+    QVector<Triangle*>* triangles = new QVector<Triangle*>;
+
+    Triangle* triangle = new Triangle();
+    triangle->normal = QVector3D(1.0f, 1.0f, 1.0f);
+    triangle->v1 = QVector3D(1.0f, 0.0f, 0.0f);
+    triangle->v2 = QVector3D(0.0f, 1.0f, 0.0f);
+    triangle->v3 = QVector3D(0.0f, 0.0f, 1.0f);
+    triangles->append(triangle);
+
+    triangle = new Triangle();
+    triangle->normal = QVector3D(1.0f, 1.0f, 1.0f);
+    triangle->v1 = QVector3D(2.0f, 0.0f, 0.0f);
+    triangle->v2 = QVector3D(0.0f, 2.0f, 0.0f);
+    triangle->v3 = QVector3D(0.0f, 0.0f, 2.0f);
+    triangles->append(triangle);
+
+    return triangles;
+}
+
+void MainWindow::deleteTrianglesVector(QVector<Triangle *> * triangles)
+{
+    for (int i = 0; i < triangles->size(); i++) {
+        delete triangles->at(i);
+    }
+    delete triangles;
 }

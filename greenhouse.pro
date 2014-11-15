@@ -6,12 +6,16 @@ HEADERS       = glwidget.h \
     ComputeAlgorithm.h \
     Blob.h \
     qtmodel.h \
-    marching.h
+    marching.h \
+    stlwriter.h \
+    triangle.h
 SOURCES       = glwidget.cpp \
                 main.cpp \
     mainwindow.cpp \
     qtmodel.cpp \
-    marching.cpp
+    marching.cpp \
+    stlwriter.cpp \
+    triangle.cpp
 QT           += opengl widgets
 
 # install

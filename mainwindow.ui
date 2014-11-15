@@ -103,6 +103,13 @@
          </property>
         </widget>
        </item>
+       <item>
+        <widget class="QPushButton" name="button_export">
+         <property name="text">
+          <string>Export</string>
+         </property>
+        </widget>
+       </item>
       </layout>
      </widget>
     </item>

@@ -379,7 +379,7 @@ int a2iTriangleConnectionTable[256][16] =
 
 Marching::Marching()
 {
-    this->iDataSetSize = 64;
+    this->iDataSetSize = 32;
     this->fStepSize = 1.0f/iDataSetSize;
     this->fTargetValue = 48.0f;
     this->fTime = 0.0f;
