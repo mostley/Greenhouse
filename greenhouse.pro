@@ -8,14 +8,22 @@ HEADERS       = glwidget.h \
     qtmodel.h \
     marching.h \
     stlwriter.h \
-    triangle.h
+    triangle.h \
+    gardener.h \
+    fertilizer.h \
+    potatofertilizer.h \
+    qcube.h
 SOURCES       = glwidget.cpp \
                 main.cpp \
     mainwindow.cpp \
     qtmodel.cpp \
     marching.cpp \
     stlwriter.cpp \
-    triangle.cpp
+    triangle.cpp \
+    gardener.cpp \
+    fertilizer.cpp \
+    potatofertilizer.cpp \
+    qcube.cpp
 QT           += opengl widgets
 
 # install

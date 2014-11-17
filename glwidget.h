@@ -5,6 +5,8 @@
 #include <QVector>
 #include <QTimer>
 
+#include "gardener.h"
+#include "fertilizer.h"
 #include "marching.h"
 #include "triangle.h"
 
@@ -50,6 +52,8 @@ private:
     QColor qtPurple;
 
     Marching* marching;
+    Gardener* gardener;
+    Fertilizer* fertilizer;
 
     void perspective(GLdouble fovy, GLdouble aspect, GLdouble zNear, GLdouble zFar);
 };
