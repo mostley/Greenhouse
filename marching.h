@@ -1,6 +1,7 @@
 #ifndef MARCHING_H
 #define MARCHING_H
 
+#include <QVector>
 #include <QVector3D>
 #include <QGLWidget>
 #include <math.h>
@@ -30,6 +31,8 @@ private:
     bool bMove;
     bool bLight;
     float time = 0.0f;
+    QVector<QVector3D>* verticeBuffer;
+    QVector<QVector3D>* normalsBuffer;
 
     void GetNormal(QVector3D &rfNormal, float fX, float fY, float fZ);
     float Sample1(float fX, float fY, float fZ);
@@ -46,9 +49,13 @@ public:
     float Yaw   = 0.0f;
 
     Marching();
+    ~Marching();
     void SetTime(float fTime);
     void MarchingCubes();
     void Draw();
+
+    QVector<QVector3D>* getVertices();
+    QVector<QVector3D>* getNormals();
 };
 
 

@@ -2,9 +2,11 @@
 #define GLWIDGET_H
 
 #include <QGLWidget>
+#include <QVector>
 #include <QTimer>
 
 #include "marching.h"
+#include "triangle.h"
 
 class QtModel;
 
@@ -18,6 +20,8 @@ public:
 
     QSize minimumSizeHint() const;
     QSize sizeHint() const;
+
+    void getTriangles(QVector<Triangle>* triangles);
 
 public slots:
     void setXRotation(int angle);

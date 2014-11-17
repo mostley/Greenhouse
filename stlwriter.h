@@ -12,11 +12,11 @@ class StlWriter
 public:
     StlWriter();
 
-    void writeStl(QString destination, QVector<Triangle*>* triangles, bool writeBinary);
+    void writeStl(QString destination, QVector<Triangle>* triangles, bool writeBinary);
 
 private:
-    void writeAscii(QFile* file, QVector<Triangle*>* triangles);
-    void writeBinary(QFile* file, QVector<Triangle*>* triangles);
+    void writeAscii(QFile* file, QVector<Triangle>* triangles);
+    void writeBinary(QFile* file, QVector<Triangle>* triangles);
 
 };
 

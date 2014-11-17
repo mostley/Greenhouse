@@ -387,9 +387,16 @@ Marching::Marching()
     this->bSpin = true;
     this->bMove = true;
     this->bLight = true;
+    this->verticeBuffer = new QVector<QVector3D>();
+    this->normalsBuffer = new QVector<QVector3D>();
 
     this->Sample = &Marching::Sample1; // or: Sample2, or Sample 3
     this->MarchCube = &Marching::MarchCube1; // or MarchCube2
+}
+Marching::~Marching()
+{
+    delete this->verticeBuffer;
+    delete this->normalsBuffer;
 }
 
 //GetOffset finds the approximate point of intersection of the surface
@@ -579,6 +586,11 @@ void Marching::MarchCube1(float fX, float fY, float fZ, float fScale)
             glColor3f(sColor.x(), sColor.y(), sColor.z());
             glNormal3f(asEdgeNorm[iVertex].x(),   asEdgeNorm[iVertex].y(),   asEdgeNorm[iVertex].z());
             glVertex3f(asEdgeVertex[iVertex].x(), asEdgeVertex[iVertex].y(), asEdgeVertex[iVertex].z());
+
+            auto normal = QVector3D(asEdgeNorm[iVertex].x(),   asEdgeNorm[iVertex].y(),   asEdgeNorm[iVertex].z());
+            this->normalsBuffer->append(normal);
+            auto vertex = QVector3D(asEdgeVertex[iVertex].x(), asEdgeVertex[iVertex].y(), asEdgeVertex[iVertex].z());
+            this->verticeBuffer->append(vertex);
         }
     }
 }
@@ -693,6 +705,9 @@ void Marching::MarchCube2(float fX, float fY, float fZ, float fScale)
 //vMarchingCubes iterates over the entire dataset, calling vMarchCube on each cube
 void Marching::MarchingCubes()
 {
+    this->verticeBuffer->clear();
+    this->normalsBuffer->clear();
+
     int iX, iY, iZ;
     for(iX = 0; iX < iDataSetSize; iX++)
     {
@@ -739,4 +754,14 @@ void Marching::Draw()
 
 
     glPopMatrix();
+}
+
+QVector<QVector3D>* Marching::getVertices()
+{
+    return this->verticeBuffer;
+}
+
+QVector<QVector3D>* Marching::getNormals()
+{
+    return this->normalsBuffer;
 }

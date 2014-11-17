@@ -41,8 +41,7 @@ private:
     ComputeAlgorithm *algorithm;
     StlWriter* stlWriter;
 
-    QVector<Triangle*>* createSample1();
-    void deleteTrianglesVector(QVector<Triangle*>* triangles);
+    QVector<Triangle>* createSample1();
 };
 
 #endif

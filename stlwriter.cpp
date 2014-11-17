@@ -8,7 +8,7 @@ StlWriter::StlWriter()
 {
 }
 
-void StlWriter::writeStl(QString destination, QVector<Triangle*>* triangles, bool writeBinary)
+void StlWriter::writeStl(QString destination, QVector<Triangle>* triangles, bool writeBinary)
 {
     if (triangles == NULL) {
         qDebug() << "Error, triangles null";
@@ -47,7 +47,7 @@ void StlWriter::writeStl(QString destination, QVector<Triangle*>* triangles, boo
     file.close();
 }
 
-void StlWriter::writeAscii(QFile *file, QVector<Triangle*>* triangles)
+void StlWriter::writeAscii(QFile *file, QVector<Triangle>* triangles)
 {
 
     QTextStream  out(file);
@@ -58,12 +58,12 @@ void StlWriter::writeAscii(QFile *file, QVector<Triangle*>* triangles)
     // write triangles
     for (int i = 0; i < triangles->size(); i++) {
         auto trinangle = triangles->at(i);
-        out << QString(" facet normal %0 %1 %2\n").arg(trinangle->normal.x()).arg(trinangle->normal.y()).arg(trinangle->normal.z());
+        out << QString(" facet normal %0 %1 %2\n").arg(trinangle.normal.x()).arg(trinangle.normal.y()).arg(trinangle.normal.z());
         out << QString("  outer loop\n");
 
-        out << QString("   vertex  %0 %1 %2\n").arg(trinangle->v1.x()).arg(trinangle->v1.y()).arg(trinangle->v1.z());
-        out << QString("   vertex  %0 %1 %2\n").arg(trinangle->v2.x()).arg(trinangle->v2.y()).arg(trinangle->v2.z());
-        out << QString("   vertex  %0 %1 %2\n").arg(trinangle->v3.x()).arg(trinangle->v3.y()).arg(trinangle->v3.z());
+        out << QString("   vertex  %0 %1 %2\n").arg(trinangle.v1.x()).arg(trinangle.v1.y()).arg(trinangle.v1.z());
+        out << QString("   vertex  %0 %1 %2\n").arg(trinangle.v2.x()).arg(trinangle.v2.y()).arg(trinangle.v2.z());
+        out << QString("   vertex  %0 %1 %2\n").arg(trinangle.v3.x()).arg(trinangle.v3.y()).arg(trinangle.v3.z());
 
         out << QString("  endloop\n");
         out << QString(" endfacet\n");
@@ -73,7 +73,7 @@ void StlWriter::writeAscii(QFile *file, QVector<Triangle*>* triangles)
     out << QString("endsolid GreenhouseShape");
 }
 
-void StlWriter::writeBinary(QFile *file, QVector<Triangle*>* triangles)
+void StlWriter::writeBinary(QFile *file, QVector<Triangle>* triangles)
 {
   Q_UNUSED(file);
   Q_UNUSED(triangles);

@@ -50,10 +50,12 @@ void MainWindow::about()
 
 void MainWindow::on_button_export_clicked()
 {
-    QVector<Triangle*>* triangles = this->createSample1();
+    //QVector<Triangle*>* triangles = this->createSample1();
+    auto triangles = new QVector<Triangle>;
+    this->ui->glFrame->getTriangles(triangles);
 
-    QString homePath = QStandardPaths::writableLocation(( QStandardPaths::HomeLocation));
-    QString fileName = QFileDialog::getSaveFileName(this,
+    auto homePath = QStandardPaths::writableLocation(( QStandardPaths::HomeLocation));
+    auto fileName = QFileDialog::getSaveFileName(this,
                                                     tr("Export to STL File"),
                                                     homePath,
                                                     tr("STL (*.stl)"));
@@ -62,36 +64,28 @@ void MainWindow::on_button_export_clicked()
         return;
     }
 
-    this->stlWriter->writeStl("E:\\dump\\test.stl", triangles, false);
+    this->stlWriter->writeStl(fileName, triangles, false);
 
-    deleteTrianglesVector(triangles);
+    delete triangles;
 }
 
-QVector<Triangle*> *MainWindow::createSample1()
+QVector<Triangle>* MainWindow::createSample1()
 {
-    QVector<Triangle*>* triangles = new QVector<Triangle*>;
+    QVector<Triangle>* triangles = new QVector<Triangle>;
 
-    Triangle* triangle = new Triangle();
-    triangle->normal = QVector3D(1.0f, 1.0f, 1.0f);
-    triangle->v1 = QVector3D(1.0f, 0.0f, 0.0f);
-    triangle->v2 = QVector3D(0.0f, 1.0f, 0.0f);
-    triangle->v3 = QVector3D(0.0f, 0.0f, 1.0f);
+    auto triangle = Triangle();
+    triangle.normal = QVector3D(1.0f, 1.0f, 1.0f);
+    triangle.v1 = QVector3D(1.0f, 0.0f, 0.0f);
+    triangle.v2 = QVector3D(0.0f, 1.0f, 0.0f);
+    triangle.v3 = QVector3D(0.0f, 0.0f, 1.0f);
     triangles->append(triangle);
 
-    triangle = new Triangle();
-    triangle->normal = QVector3D(1.0f, 1.0f, 1.0f);
-    triangle->v1 = QVector3D(2.0f, 0.0f, 0.0f);
-    triangle->v2 = QVector3D(0.0f, 2.0f, 0.0f);
-    triangle->v3 = QVector3D(0.0f, 0.0f, 2.0f);
+    triangle = Triangle();
+    triangle.normal = QVector3D(1.0f, 1.0f, 1.0f);
+    triangle.v1 = QVector3D(2.0f, 0.0f, 0.0f);
+    triangle.v2 = QVector3D(0.0f, 2.0f, 0.0f);
+    triangle.v3 = QVector3D(0.0f, 0.0f, 2.0f);
     triangles->append(triangle);
 
     return triangles;
-}
-
-void MainWindow::deleteTrianglesVector(QVector<Triangle *> * triangles)
-{
-    for (int i = 0; i < triangles->size(); i++) {
-        delete triangles->at(i);
-    }
-    delete triangles;
 }
