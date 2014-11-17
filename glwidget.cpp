@@ -208,14 +208,14 @@ void GLWidget::getTriangles(QVector<Triangle>* triangles)
     for (auto j=0; j<vertices->count(); j+=3) {
         auto i = j/3;
 
-        if (i < triangles->count()) {
+        if (i >= triangles->count()) {
             triangles->append(Triangle());
         }
 
-        (*triangles)[i].v1 = vertices->at(j+0);
-        (*triangles)[i].v2 = vertices->at(j+1);
-        (*triangles)[i].v3 = vertices->at(j+2);
-
-        (*triangles)[i].normal = (normals->at(j+0) + normals->at(j+1) + normals->at(j+2)).normalized();
+        Triangle& triangle = (*triangles)[i];
+        triangle.v1 = vertices->at(j+0);
+        triangle.v2 = vertices->at(j+1);
+        triangle.v3 = vertices->at(j+2);
+        triangle.normal = (normals->at(j+0) + normals->at(j+1) + normals->at(j+2)).normalized();
     }
 }
