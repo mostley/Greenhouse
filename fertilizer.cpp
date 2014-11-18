@@ -78,7 +78,6 @@ Fertilizer::Fertilizer()
     this->drawSeeds = true;
     this->drawNutrients = true;
     this->numberOfNutrients = 100;
-    this->randomSeed = 12345;
 }
 
 float Fertilizer::getStrength(QVector3D position)
@@ -92,25 +91,40 @@ float Fertilizer::getStrength(QVector3D position)
 
 void Fertilizer::draw()
 {
+    auto sphere = new QtSphere();
     if (this->drawSeeds) {
-        auto black = QColor::fromRgb(0, 0, 0);
+        glColor3i(0, 0, 0);
         for (int i=0; i<this->seeds.size(); i++) {
-            drawSphere(this->seeds[i], black, 1, 16, 16);
+            auto pos = this->seeds[i];
+
+            //drawSphere(this->seeds[i], black, 1, 16, 16);
+            glPushMatrix();
+            glTranslatef(pos.x(), pos.y(), pos.z());
+
+            sphere->draw();
+
+            glPopMatrix();
         }
     }
 
     if (this->drawNutrients) {
-        auto green = QColor::fromRgb(0, 255, 0);
+        glColor3i(0, 255, 0);
         for (int i=0; i<this->nutrients.size(); i++) {
+            auto pos = this->nutrients[i];
+
             //drawSphere(this->nutrients[i], black, 1, 16, 16);
-            drawCube(this->nutrients[i], green, 1);
+            //drawCube(this->nutrients[i], green, 1);
+            glPushMatrix();
+            glTranslatef(pos.x(), pos.y(), pos.z());
+
+            sphere->draw();
+
+            glPopMatrix();
         }
     }
 
     //drawCube(QVector3D(0,0,0), QColor::fromRgb(0, 255, 0), 0.1);
 
-    auto sphere = new QtSphere();
-    sphere->draw();
 }
 
 void Fertilizer::setup(Gardener *gardener)

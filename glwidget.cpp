@@ -69,10 +69,10 @@ void GLWidget::setNutrientAmount(int nutrientAmount)
 
 void GLWidget::setRandomSeed(int randomSeed)
 {
-    if (this->fertilizer->randomSeed != randomSeed) {
-        this->fertilizer->randomSeed = randomSeed;
+    if (this->gardener->randomSeed != randomSeed) {
+        this->gardener->randomSeed = randomSeed;
         emit randomSeedChanged(randomSeed);
-        this->fertilizer->grow();
+        this->gardener->init();
     }
 }
 
@@ -85,7 +85,7 @@ void GLWidget::initializeGL()
     qglClearColor(qtPurple.dark());
     glClearDepth( 1.0 );
 
-    model = new QtModel(64);
+    model = new QtModel(64, 1.0f);
     model->setColor(qtGreen.dark());
 
     glEnable(GL_DEPTH_TEST);
@@ -116,16 +116,22 @@ void GLWidget::initializeGL()
 
 void GLWidget::paintGL()
 {
+    glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
+    glLoadIdentity();
+
+    glTranslatef(0.0, 0.0, -1.0);
+    glRotatef(xRot / 16.0, 1.0, 0.0, 0.0);
+    glRotatef(yRot / 16.0, 0.0, 1.0, 0.0);
+    glRotatef(zRot / 16.0, 0.0, 0.0, 1.0);
+
     //this->model->draw();
 
     if (this->fertilizer != NULL) {
         this->fertilizer->draw();
     }
 
-    this->marching->Pitch = -xRot / 16.0;
-    this->marching->Yaw = yRot / 16.0;
     this->marching->setup(this->fertilizer);
-    this->marching->Draw();
+    this->marching->draw();
 }
 
 void GLWidget::resizeGL(int width, int height)
@@ -149,20 +155,22 @@ void GLWidget::resizeGL(int width, int height)
     glMatrixMode (GL_PROJECTION);
     glLoadIdentity ();
 
-    if(width <= height)
-    {
-        aspect = (float)height / (float)width;
-        glOrtho(-halfWorldSize, halfWorldSize, -halfWorldSize*aspect,
-                halfWorldSize*aspect, -10*halfWorldSize, 10*halfWorldSize);
+    if (true) { // perspective or orthographic
+        if(width <= height)
+        {
+            aspect = (float)height / (float)width;
+            glOrtho(-halfWorldSize, halfWorldSize, -halfWorldSize*aspect,
+                    halfWorldSize*aspect, -10*halfWorldSize, 10*halfWorldSize);
+        }
+        else
+        {
+            aspect = (float)width / (float)height;
+            glOrtho(-halfWorldSize*aspect, halfWorldSize*aspect, -halfWorldSize,
+                    halfWorldSize, -10*halfWorldSize, 10*halfWorldSize);
+        }
+    } else {
+        this->perspective(60, 4.0f/3.0f, 0.1f, 100.0f);
     }
-    else
-    {
-        aspect = (float)width / (float)height;
-        glOrtho(-halfWorldSize*aspect, halfWorldSize*aspect, -halfWorldSize,
-                halfWorldSize, -10*halfWorldSize, 10*halfWorldSize);
-    }
-
-    //this->perspective(60, 4.0f/3.0f, 0.1f, 100.0f);
 
     glMatrixMode( GL_MODELVIEW );
 }
@@ -197,6 +205,12 @@ void GLWidget::mouseMoveEvent(QMouseEvent *event)
         zRot += 8 * dx;
     }
     lastPos = event->pos();
+}
+
+void GLWidget::mouseWheelEvent(QWheelEvent *event)
+{
+    auto dx = event->angleDelta();
+    //TODO zoom
 }
 
 void GLWidget::getTriangles(QVector<Triangle>* triangles)

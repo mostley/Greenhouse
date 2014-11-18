@@ -29,7 +29,6 @@ private:
     float   fTargetValue;
     float   fTime;
     QVector3D  sSourcePoint[3];
-    bool bSpin;
     bool bMove;
     bool bLight;
     float time = 0.0f;
@@ -38,24 +37,21 @@ private:
 
     Fertilizer* fertilizer;
 
-    void GetNormal(QVector3D &rfNormal, float fX, float fY, float fZ);
-    float Sample1(float fX, float fY, float fZ);
-    float Sample2(float fX, float fY, float fZ);
-    float Sample3(float fX, float fY, float fZ);
-    void MarchCube1(float fX, float fY, float fZ, float fScale);
-    void MarchCube2(float fX, float fY, float fZ, float fScale);
-    void (Marching::*MarchCube)(float fX, float fY, float fZ, float fScale);
-    void MarchTetrahedron(QVector3D *pasTetrahedronPosition, float *pafTetrahedronValue);
+    void getNormal(QVector3D &rfNormal, float fX, float fY, float fZ);
+    float sample1(float fX, float fY, float fZ);
+    float sample2(float fX, float fY, float fZ);
+    float sample3(float fX, float fY, float fZ);
+    void marchCube1(float fX, float fY, float fZ, float fScale);
+    void marchCube2(float fX, float fY, float fZ, float fScale);
+    void (Marching::*marchCube)(float fX, float fY, float fZ, float fScale);
+    void marchTetrahedron(QVector3D *pasTetrahedronPosition, float *pafTetrahedronValue);
 
 public:
-    float Pitch = 0.0f;
-    float Yaw   = 0.0f;
-
     Marching();
     ~Marching();
-    void SetTime(float fTime);
-    void MarchingCubes();
-    void Draw();
+    void setTime(float fTime);
+    void marchingCubes();
+    void draw();
     void setup(Fertilizer* fertilizer);
 
     QVector<QVector3D>* getVertices();

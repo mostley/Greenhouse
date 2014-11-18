@@ -1,5 +1,7 @@
 #include "potatofertilizer.h"
 
+#include <QtDebug>
+
 PotatoFertilizer::PotatoFertilizer()
 {
     seeds.append(QVector3D(0.0f, 0.0f, 0.0f));
@@ -15,7 +17,7 @@ void PotatoFertilizer::grow()
     this->nutrients.clear();
 
     for (int n = 0; n < this->numberOfNutrients; n++) {
-        auto nutrientPosition = this->gardener->getRandomPointInside(this->randomSeed);
+        auto nutrientPosition = this->gardener->getRandomPointInside();
         this->nutrients.append(nutrientPosition);
     }
 

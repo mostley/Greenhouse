@@ -10,7 +10,8 @@ struct Geometry;
 class QtModel
 {
 public:
-    explicit QtModel(int d = 64, qreal s = 1.0);
+    QtModel();
+    QtModel(int d, qreal s);
     ~QtModel();
     void setColor(QColor c);
     void draw() const;
@@ -26,7 +27,7 @@ class QtSphere : public QtModel
 public:
     explicit QtSphere(int d = 64, qreal s = 1.0);
 private:
-    virtual void buildGeometry(int d, qreal s);
+    void buildGeometry(int d, qreal s);
 };
 
 #endif // QTMODEL_H

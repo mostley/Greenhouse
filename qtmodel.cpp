@@ -5,6 +5,7 @@
 #include <QVector3D>
 
 #include <qmath.h>
+#include <QtDebug>
 
 static const qreal tee_height = 0.311126;
 static const qreal cross_width = 0.25;
@@ -279,6 +280,11 @@ RectTorus::RectTorus(Geometry *g, qreal iRad, qreal oRad, qreal depth, int k)
     parts << front << back << is << os;
 }
 
+QtModel::QtModel()
+    : geom(new Geometry())
+{
+}
+
 QtModel::QtModel(int divisions, qreal scale)
     : geom(new Geometry())
 {
@@ -294,7 +300,9 @@ QtModel::~QtModel()
 void QtModel::setColor(QColor c)
 {
     for (int i = 0; i < parts.count(); ++i)
+    {
         qSetColor(parts[i]->faceColor, c);
+    }
 }
 
 void QtModel::buildGeometry(int divisions, qreal scale)
@@ -323,6 +331,8 @@ void QtModel::buildGeometry(int divisions, qreal scale)
 
 void QtModel::draw() const
 {
+    glPushMatrix();
+
     geom->loadArrays();
 
     glEnableClientState(GL_VERTEX_ARRAY);
@@ -334,33 +344,28 @@ void QtModel::draw() const
 
     glDisableClientState(GL_VERTEX_ARRAY);
     glDisableClientState(GL_NORMAL_ARRAY);
+
+    glPopMatrix();
 }
 
 QtSphere::QtSphere(int divisions, qreal scale)
-    : QtModel(divisions, scale)
+    : QtModel()
 {
+    this->buildGeometry(divisions, scale);
 }
 
 void QtSphere::buildGeometry(int divisions, qreal scale)
 {
-    qreal cw = cross_width * scale;
-    qreal bt = bar_thickness * scale;
-    qreal ld = logo_depth * scale;
-    qreal th = tee_height *scale;
+    Q_UNUSED(divisions);
 
-    RectPrism cross(geom, cw, bt, ld);
-    RectPrism stem(geom, bt, th, ld);
+    qreal ld = logo_depth * scale;
+
+    RectPrism cross(geom, ld, ld, ld);
 
     QVector3D z(0.0, 0.0, 1.0);
     cross.rotate(45.0, z);
-    stem.rotate(45.0, z);
 
-    qreal stem_downshift = (th + bt) / 2.0;
-    stem.translate(QVector3D(0.0, -stem_downshift, 0.0));
-
-    RectTorus body(geom, 0.20, 0.30, 0.1, divisions);
-
-    parts << stem.parts << cross.parts << body.parts;
+    parts = cross.parts;
 
     geom->finalize();
 }

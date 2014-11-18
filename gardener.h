@@ -14,7 +14,11 @@ public:
 
     bool isInside(QVector3D position);
 
-    QVector3D getRandomPointInside(int randomSeed);
+    QVector3D getRandomPointInside();
+
+    void init();
+
+    int randomSeed;
 
 private:
     QCube boundingBox;

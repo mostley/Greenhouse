@@ -25,7 +25,6 @@ public:
     void setup(Gardener* gardener);
 
     int numberOfNutrients;
-    int randomSeed;
     bool drawNutrients;
     bool drawSeeds;
 

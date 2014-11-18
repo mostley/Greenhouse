@@ -4,6 +4,7 @@ Gardener::Gardener(float width, float height, float depth)
 {
     this->boundingBox = QCube(-width/2.0f, -height/2.0f, -depth/2.0f,
                               width/2.0f, height/2.0f, depth/2.0f);
+    this->randomSeed = 12345;
 }
 
 void Gardener::draw()
@@ -11,16 +12,19 @@ void Gardener::draw()
 
 }
 
+void Gardener::init()
+{
+    qsrand(this->randomSeed);
+}
+
 bool Gardener::isInside(QVector3D position)
 {
     return this->boundingBox.contains(position);
 }
 
-QVector3D Gardener::getRandomPointInside(int randomSeed)
+QVector3D Gardener::getRandomPointInside()
 {
     QVector3D result;
-
-    qsrand(randomSeed);
 
     auto validPoint = false;
     auto boundingDimensions = this->boundingBox.size();

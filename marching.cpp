@@ -384,13 +384,12 @@ Marching::Marching()
     this->fTargetValue = 48.0f;
     this->fTime = 0.0f;
     this->sSourcePoint[3];
-    this->bSpin = true;
     this->bMove = true;
     this->bLight = true;
     this->verticeBuffer = new QVector<QVector3D>();
     this->normalsBuffer = new QVector<QVector3D>();
 
-    this->MarchCube = &Marching::MarchCube1; // or MarchCube2
+    this->marchCube = &Marching::marchCube1; // or MarchCube2
 }
 Marching::~Marching()
 {
@@ -432,7 +431,7 @@ void GetColor(QVector3D &rfColor, QVector3D &rfPosition, QVector3D &rfNormal)
 
 //Generate a sample data set.  fSample1(), fSample2() and fSample3() define three scalar fields whose
 // values vary by the X,Y and Z coordinates and by the fTime value set by vSetTime()
-void Marching::SetTime(float fNewTime)
+void Marching::setTime(float fNewTime)
 {
     float fOffset;
     int iSourceNum;
@@ -450,7 +449,7 @@ void Marching::SetTime(float fNewTime)
 }
 
 //fSample1 finds the distance of (fX, fY, fZ) from three moving points
-float Marching::Sample1(float fX, float fY, float fZ)
+float Marching::sample1(float fX, float fY, float fZ)
 {
     float fResult = 0.0f;
     float fDx, fDy, fDz;
@@ -473,7 +472,7 @@ float Marching::Sample1(float fX, float fY, float fZ)
 }
 
 //fSample2 finds the distance of (fX, fY, fZ) from three moving lines
-float Marching::Sample2(float fX, float fY, float fZ)
+float Marching::sample2(float fX, float fY, float fZ)
 {
     float fResult = 0.0f;
     float fDx, fDy, fDz;
@@ -494,7 +493,7 @@ float Marching::Sample2(float fX, float fY, float fZ)
 
 
 //fSample2 defines a height field by plugging the distance from the center into the sin and cos functions
-float Marching::Sample3(float fX, float fY, float fZ)
+float Marching::sample3(float fX, float fY, float fZ)
 {
     float fHeight = 20.0f*(fTime + sqrt((0.5f-fX)*(0.5f-fX) + (0.5f-fY)*(0.5f-fY)));
     fHeight = 1.5f + 0.1f*(sinf(fHeight) + cosf(fHeight));
@@ -506,7 +505,7 @@ float Marching::Sample3(float fX, float fY, float fZ)
 
 //vGetNormal() finds the gradient of the scalar field at a point
 //This gradient can be used as a very accurate vertx normal for lighting calculations
-void Marching::GetNormal(QVector3D &rfNormal, float fX, float fY, float fZ)
+void Marching::getNormal(QVector3D &rfNormal, float fX, float fY, float fZ)
 {
     rfNormal.setX(this->fertilizer->getStrength(QVector3D(fX-0.01f, fY, fZ)) - this->fertilizer->getStrength(QVector3D(fX+0.01f, fY, fZ)));
     rfNormal.setY(this->fertilizer->getStrength(QVector3D(fX, fY-0.01f, fZ)) - this->fertilizer->getStrength(QVector3D(fX, fY+0.01f, fZ)));
@@ -516,7 +515,7 @@ void Marching::GetNormal(QVector3D &rfNormal, float fX, float fY, float fZ)
 
 
 //vMarchCube1 performs the Marching Cubes algorithm on a single cube
-void Marching::MarchCube1(float fX, float fY, float fZ, float fScale)
+void Marching::marchCube1(float fX, float fY, float fZ, float fScale)
 {
     int iCorner, iVertex, iVertexTest, iEdge, iTriangle, iFlagIndex, iEdgeFlags;
     float fOffset;
@@ -566,7 +565,7 @@ void Marching::MarchCube1(float fX, float fY, float fZ, float fScale)
             asEdgeVertex[iEdge].setY(fY + (a2fVertexOffset[ a2iEdgeConnection[iEdge][0] ][1]  +  fOffset * a2fEdgeDirection[iEdge][1]) * fScale);
             asEdgeVertex[iEdge].setZ(fZ + (a2fVertexOffset[ a2iEdgeConnection[iEdge][0] ][2]  +  fOffset * a2fEdgeDirection[iEdge][2]) * fScale);
 
-            this->GetNormal(asEdgeNorm[iEdge], asEdgeVertex[iEdge].x(), asEdgeVertex[iEdge].y(), asEdgeVertex[iEdge].z());
+            this->getNormal(asEdgeNorm[iEdge], asEdgeVertex[iEdge].x(), asEdgeVertex[iEdge].y(), asEdgeVertex[iEdge].z());
         }
     }
 
@@ -596,7 +595,7 @@ void Marching::MarchCube1(float fX, float fY, float fZ, float fScale)
 }
 
 //vMarchTetrahedron performs the Marching Tetrahedrons algorithm on a single tetrahedron
-void Marching::MarchTetrahedron(QVector3D *pasTetrahedronPosition, float *pafTetrahedronValue)
+void Marching::marchTetrahedron(QVector3D *pasTetrahedronPosition, float *pafTetrahedronValue)
 {
     int iEdge, iVert0, iVert1, iEdgeFlags, iTriangle, iCorner, iVertex, iFlagIndex = 0;
     float fOffset, fInvOffset;
@@ -637,7 +636,7 @@ void Marching::MarchTetrahedron(QVector3D *pasTetrahedronPosition, float *pafTet
             asEdgeVertex[iEdge].setY(fInvOffset*pasTetrahedronPosition[iVert0].y()  +  fOffset*pasTetrahedronPosition[iVert1].y());
             asEdgeVertex[iEdge].setY(fInvOffset*pasTetrahedronPosition[iVert0].z()  +  fOffset*pasTetrahedronPosition[iVert1].z());
 
-            this->GetNormal(asEdgeNorm[iEdge], asEdgeVertex[iEdge].x(), asEdgeVertex[iEdge].y(), asEdgeVertex[iEdge].z());
+            this->getNormal(asEdgeNorm[iEdge], asEdgeVertex[iEdge].x(), asEdgeVertex[iEdge].y(), asEdgeVertex[iEdge].z());
         }
     }
     //Draw the triangles that were found.  There can be up to 2 per tetrahedron
@@ -663,7 +662,7 @@ void Marching::MarchTetrahedron(QVector3D *pasTetrahedronPosition, float *pafTet
 
 
 //vMarchCube2 performs the Marching Tetrahedrons algorithm on a single cube by making six calls to vMarchTetrahedron
-void Marching::MarchCube2(float fX, float fY, float fZ, float fScale)
+void Marching::marchCube2(float fX, float fY, float fZ, float fScale)
 {
     int iVertex, iTetrahedron, iVertexInACube;
     QVector3D asCubePosition[8];
@@ -698,13 +697,13 @@ void Marching::MarchCube2(float fX, float fY, float fZ, float fScale)
             asTetrahedronPosition[iVertex].setY(asCubePosition[iVertexInACube].z());
             afTetrahedronValue[iVertex] = afCubeValue[iVertexInACube];
         }
-        this->MarchTetrahedron(asTetrahedronPosition, afTetrahedronValue);
+        this->marchTetrahedron(asTetrahedronPosition, afTetrahedronValue);
     }
 }
 
 
 //vMarchingCubes iterates over the entire dataset, calling vMarchCube on each cube
-void Marching::MarchingCubes()
+void Marching::marchingCubes()
 {
     this->verticeBuffer->clear();
     this->normalsBuffer->clear();
@@ -716,40 +715,26 @@ void Marching::MarchingCubes()
         {
             for(iZ = 0; iZ < iDataSetSize; iZ++)
             {
-                (this->*MarchCube)(iX*fStepSize, iY*fStepSize, iZ*fStepSize, fStepSize);
+                (this->*marchCube)(iX*fStepSize, iY*fStepSize, iZ*fStepSize, fStepSize);
             }
         }
     }
 }
 
-void Marching::Draw()
+void Marching::draw()
 {
-    glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
-
     glPushMatrix();
-
-    if(bSpin)
-    {
-        //Pitch += 4.0f;
-        //Yaw   += 2.5f;
-    }
     if(bMove)
     {
         time  += 0.025f;
     }
 
-    this->SetTime(time);
-
-    glTranslatef(0.0, 0.0, -1.0);
-    glRotatef( -Pitch, 1.0, 0.0, 0.0);
-    glRotatef(     0.0, 0.0, 1.0, 0.0);
-    glRotatef(    Yaw, 0.0, 0.0, 1.0);
-
+    this->setTime(time);
 
     glPushMatrix();
     glTranslatef(-0.5, -0.5, -0.5);
     glBegin(GL_TRIANGLES);
-    this->MarchingCubes();
+    this->marchingCubes();
     glEnd();
     glPopMatrix();
 

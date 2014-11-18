@@ -41,6 +41,7 @@ protected:
     void resizeGL(int width, int height);
     void mousePressEvent(QMouseEvent *event);
     void mouseMoveEvent(QMouseEvent *event);
+    void mouseWheelEvent(QWheelEvent *event);
 
 private:
     QtModel *model;
