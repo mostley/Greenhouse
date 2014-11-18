@@ -12,10 +12,10 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
 
     connect(ui->nutrientSlider, SIGNAL(valueChanged(int)), ui->glFrame, SLOT(setNutrientAmount(int)));
-    connect(ui->glFrame, SIGNAL(setNutrientAmount(int)), ui->nutrientSlider, SLOT(setValue(int)));
+    connect(ui->glFrame, SIGNAL(nutrientAmountChanged(int)), ui->nutrientSlider, SLOT(setValue(int)));
 
     connect(ui->randomSeedSlider, SIGNAL(valueChanged(int)), ui->glFrame, SLOT(setRandomSeed(int)));
-    connect(ui->glFrame, SIGNAL(setRandomSeed(int)), ui->randomSeedSlider, SLOT(setValue(int)));
+    connect(ui->glFrame, SIGNAL(randomSeedChanged(int)), ui->randomSeedSlider, SLOT(setValue(int)));
 
     connect(this->ui->actionAbout, SIGNAL(triggered()), this, SLOT(about()));
     connect(this->ui->actionExit, SIGNAL(triggered()), this, SLOT(close()));

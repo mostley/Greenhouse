@@ -20,10 +20,14 @@ public:
     float getStrength(QVector3D position); // how much plant is here
     virtual void grow() = 0;
 
+    void draw();
+
     void setup(Gardener* gardener);
 
     int numberOfNutrients;
     int randomSeed;
+    bool drawNutrients;
+    bool drawSeeds;
 
 protected:
     QVector<QVector3D> seeds;     // start growing

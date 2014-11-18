@@ -279,9 +279,8 @@ RectTorus::RectTorus(Geometry *g, qreal iRad, qreal oRad, qreal depth, int k)
     parts << front << back << is << os;
 }
 
-QtModel::QtModel(QObject *parent, int divisions, qreal scale)
-    : QObject(parent)
-    , geom(new Geometry())
+QtModel::QtModel(int divisions, qreal scale)
+    : geom(new Geometry())
 {
     buildGeometry(divisions, scale);
 }
@@ -335,4 +334,33 @@ void QtModel::draw() const
 
     glDisableClientState(GL_VERTEX_ARRAY);
     glDisableClientState(GL_NORMAL_ARRAY);
+}
+
+QtSphere::QtSphere(int divisions, qreal scale)
+    : QtModel(divisions, scale)
+{
+}
+
+void QtSphere::buildGeometry(int divisions, qreal scale)
+{
+    qreal cw = cross_width * scale;
+    qreal bt = bar_thickness * scale;
+    qreal ld = logo_depth * scale;
+    qreal th = tee_height *scale;
+
+    RectPrism cross(geom, cw, bt, ld);
+    RectPrism stem(geom, bt, th, ld);
+
+    QVector3D z(0.0, 0.0, 1.0);
+    cross.rotate(45.0, z);
+    stem.rotate(45.0, z);
+
+    qreal stem_downshift = (th + bt) / 2.0;
+    stem.translate(QVector3D(0.0, -stem_downshift, 0.0));
+
+    RectTorus body(geom, 0.20, 0.30, 0.1, divisions);
+
+    parts << stem.parts << cross.parts << body.parts;
+
+    geom->finalize();
 }

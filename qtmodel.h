@@ -7,18 +7,26 @@
 class Patch;
 struct Geometry;
 
-class QtModel : public QObject
+class QtModel
 {
 public:
-    explicit QtModel(QObject *parent, int d = 64, qreal s = 1.0);
+    explicit QtModel(int d = 64, qreal s = 1.0);
     ~QtModel();
     void setColor(QColor c);
     void draw() const;
-private:
-    void buildGeometry(int d, qreal s);
+protected:
+    virtual void buildGeometry(int d, qreal s);
 
     QList<Patch *> parts;
     Geometry *geom;
+};
+
+class QtSphere : public QtModel
+{
+public:
+    explicit QtSphere(int d = 64, qreal s = 1.0);
+private:
+    virtual void buildGeometry(int d, qreal s);
 };
 
 #endif // QTMODEL_H

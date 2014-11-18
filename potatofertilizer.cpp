@@ -3,17 +3,17 @@
 PotatoFertilizer::PotatoFertilizer()
 {
     seeds.append(QVector3D(0.0f, 0.0f, 0.0f));
-    this->numberOfNutrients = 100;
-    this->randomSeed = 12345;
 
     auto b = Bud();
     b.position = QVector3D(0.5,0.5,0.5);
     b.strength = 1.0f;
-    this->buds.append(b);
+    //this->buds.append(b);
 }
 
 void PotatoFertilizer::grow()
 {
+    this->nutrients.clear();
+
     for (int n = 0; n < this->numberOfNutrients; n++) {
         auto nutrientPosition = this->gardener->getRandomPointInside(this->randomSeed);
         this->nutrients.append(nutrientPosition);

@@ -57,9 +57,6 @@ private:
     Fertilizer* fertilizer;
 
     void perspective(GLdouble fovy, GLdouble aspect, GLdouble zNear, GLdouble zFar);
-
-private slots:
-    void updateFertilizer();
 };
 
 #endif

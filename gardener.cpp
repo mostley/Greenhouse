@@ -25,9 +25,9 @@ QVector3D Gardener::getRandomPointInside(int randomSeed)
     auto validPoint = false;
     auto boundingDimensions = this->boundingBox.size();
     while (!validPoint) {
-        result = QVector3D(qrand()/RAND_MAX * boundingDimensions.x(),
-                           qrand()/RAND_MAX * boundingDimensions.y(),
-                           qrand()/RAND_MAX * boundingDimensions.z());
+        result = QVector3D((float)qrand()/RAND_MAX * boundingDimensions.x(),
+                           (float)qrand()/RAND_MAX * boundingDimensions.y(),
+                           (float)qrand()/RAND_MAX * boundingDimensions.z());
         validPoint = this->isInside(result);
     }
 

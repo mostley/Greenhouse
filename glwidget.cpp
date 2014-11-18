@@ -23,19 +23,12 @@ GLWidget::GLWidget(QWidget *parent)
 
     this->marching = new Marching();
     this->fertilizer = new PotatoFertilizer();
-    this->gardener = new Gardener(10, 10, 10);
+    this->gardener = new Gardener(0.5, 0.5, 0.5);
     this->fertilizer->setup(this->gardener);
 
     QTimer *timer = new QTimer(this);
     connect(timer, SIGNAL(timeout()), this, SLOT(updateGL()));
     timer->start(1000.0f/30.0f);
-
-    connect(this, SIGNAL(nutrientAmountChanged(int)), this, SLOT(updateFertilizer));
-}
-
-void GLWidget::updateFertilizer()
-{
-    this->fertilizer->grow();
 }
 
 GLWidget::~GLWidget()
@@ -70,6 +63,7 @@ void GLWidget::setNutrientAmount(int nutrientAmount)
     if (this->fertilizer->numberOfNutrients != nutrientAmount) {
         this->fertilizer->numberOfNutrients = nutrientAmount;
         emit nutrientAmountChanged(nutrientAmount);
+        this->fertilizer->grow();
     }
 }
 
@@ -78,6 +72,7 @@ void GLWidget::setRandomSeed(int randomSeed)
     if (this->fertilizer->randomSeed != randomSeed) {
         this->fertilizer->randomSeed = randomSeed;
         emit randomSeedChanged(randomSeed);
+        this->fertilizer->grow();
     }
 }
 
@@ -90,7 +85,7 @@ void GLWidget::initializeGL()
     qglClearColor(qtPurple.dark());
     glClearDepth( 1.0 );
 
-    model = new QtModel(this, 64);
+    model = new QtModel(64);
     model->setColor(qtGreen.dark());
 
     glEnable(GL_DEPTH_TEST);
@@ -121,7 +116,11 @@ void GLWidget::initializeGL()
 
 void GLWidget::paintGL()
 {
-    /*this->model->draw();*/
+    //this->model->draw();
+
+    if (this->fertilizer != NULL) {
+        this->fertilizer->draw();
+    }
 
     this->marching->Pitch = -xRot / 16.0;
     this->marching->Yaw = yRot / 16.0;
