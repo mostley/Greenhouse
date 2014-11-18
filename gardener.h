@@ -3,18 +3,21 @@
 
 #include <QVector3D>
 
+#include "qcube.h"
+
 class Gardener
 {
 public:
-    Gardener();
+    Gardener(float width, float height, float depth);
 
     void draw();
 
     bool isInside(QVector3D position);
 
-    //QRectF boundingBox;
+    QVector3D getRandomPointInside(int randomSeed);
 
-    QVector3D getRandomPointInside();
+private:
+    QCube boundingBox;
 };
 
 #endif // GARDENER_H

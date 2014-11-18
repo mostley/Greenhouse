@@ -14,18 +14,28 @@ GLWidget::GLWidget(QWidget *parent)
     : QGLWidget(QGLFormat(QGL::SampleBuffers), parent)
 {
     model = 0;
-    xRot = 0;
-    yRot = 0;
-    zRot = 0;
+    xRot = 0.0f;
+    yRot = 0.0f;
+    zRot = 0.0f;
 
     qtGreen = QColor::fromCmykF(0.40, 0.0, 1.0, 0.0);
     qtPurple = QColor::fromCmykF(0.39, 0.39, 0.0, 0.0);
 
     this->marching = new Marching();
+    this->fertilizer = new PotatoFertilizer();
+    this->gardener = new Gardener(10, 10, 10);
+    this->fertilizer->setup(this->gardener);
 
     QTimer *timer = new QTimer(this);
     connect(timer, SIGNAL(timeout()), this, SLOT(updateGL()));
     timer->start(1000.0f/30.0f);
+
+    connect(this, SIGNAL(nutrientAmountChanged(int)), this, SLOT(updateFertilizer));
+}
+
+void GLWidget::updateFertilizer()
+{
+    this->fertilizer->grow();
 }
 
 GLWidget::~GLWidget()
@@ -55,30 +65,19 @@ static void qNormalizeAngle(int &angle)
     }
 }
 
-void GLWidget::setXRotation(int angle)
+void GLWidget::setNutrientAmount(int nutrientAmount)
 {
-    qNormalizeAngle(angle);
-    if (angle != xRot) {
-        xRot = angle;
-        emit xRotationChanged(angle);
+    if (this->fertilizer->numberOfNutrients != nutrientAmount) {
+        this->fertilizer->numberOfNutrients = nutrientAmount;
+        emit nutrientAmountChanged(nutrientAmount);
     }
 }
 
-void GLWidget::setYRotation(int angle)
+void GLWidget::setRandomSeed(int randomSeed)
 {
-    qNormalizeAngle(angle);
-    if (angle != yRot) {
-        yRot = angle;
-        emit yRotationChanged(angle);
-    }
-}
-
-void GLWidget::setZRotation(int angle)
-{
-    qNormalizeAngle(angle);
-    if (angle != zRot) {
-        zRot = angle;
-        emit zRotationChanged(angle);
+    if (this->fertilizer->randomSeed != randomSeed) {
+        this->fertilizer->randomSeed = randomSeed;
+        emit randomSeedChanged(randomSeed);
     }
 }
 
@@ -126,6 +125,7 @@ void GLWidget::paintGL()
 
     this->marching->Pitch = -xRot / 16.0;
     this->marching->Yaw = yRot / 16.0;
+    this->marching->setup(this->fertilizer);
     this->marching->Draw();
 }
 
@@ -191,11 +191,11 @@ void GLWidget::mouseMoveEvent(QMouseEvent *event)
     int dy = event->y() - lastPos.y();
 
     if (event->buttons() & Qt::LeftButton) {
-        setXRotation(xRot + 8 * dy);
-        setYRotation(yRot + 8 * dx);
+        xRot += 8 * dy;
+        yRot += 8 * dx;
     } else if (event->buttons() & Qt::RightButton) {
-        setXRotation(xRot + 8 * dy);
-        setZRotation(zRot + 8 * dx);
+        xRot += 8 * dy;
+        zRot += 8 * dx;
     }
     lastPos = event->pos();
 }

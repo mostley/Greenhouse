@@ -6,6 +6,8 @@
 #include <QGLWidget>
 #include <math.h>
 
+#include "fertilizer.h"
+
 static const float afAmbientWhite [] = {0.25, 0.25, 0.25, 1.00};
 static const float afAmbientRed   [] = {0.25, 0.00, 0.00, 1.00};
 static const float afAmbientGreen [] = {0.00, 0.25, 0.00, 1.00};
@@ -34,11 +36,12 @@ private:
     QVector<QVector3D>* verticeBuffer;
     QVector<QVector3D>* normalsBuffer;
 
+    Fertilizer* fertilizer;
+
     void GetNormal(QVector3D &rfNormal, float fX, float fY, float fZ);
     float Sample1(float fX, float fY, float fZ);
     float Sample2(float fX, float fY, float fZ);
     float Sample3(float fX, float fY, float fZ);
-    float (Marching::*Sample)(float fX, float fY, float fZ);
     void MarchCube1(float fX, float fY, float fZ, float fScale);
     void MarchCube2(float fX, float fY, float fZ, float fScale);
     void (Marching::*MarchCube)(float fX, float fY, float fZ, float fScale);
@@ -53,6 +56,7 @@ public:
     void SetTime(float fTime);
     void MarchingCubes();
     void Draw();
+    void setup(Fertilizer* fertilizer);
 
     QVector<QVector3D>* getVertices();
     QVector<QVector3D>* getNormals();

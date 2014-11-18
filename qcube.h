@@ -27,6 +27,8 @@ public:
     void setPos(const QVector3D& pos);
     QVector3D size() const;
 
+    bool contains(QVector3D position);
+
 };
 
 #endif // QCUBE_H

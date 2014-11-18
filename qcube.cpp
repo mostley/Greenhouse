@@ -64,3 +64,9 @@ QVector3D QCube::size() const
 {
     return (pos1 - pos0);
 }
+
+bool QCube::contains(QVector3D position)
+{
+    return position.x() > this->pos0.x() && position.y() > this->pos0.y() && position.z() > this->pos0.z() &&
+           position.x() < this->pos1.x() && position.y() < this->pos1.y() && position.z() < this->pos1.z();
+}

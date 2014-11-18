@@ -1,9 +1,16 @@
 #ifndef FERTILIZER_H
 #define FERTILIZER_H
 
+#include <QVector>
 #include <QVector3D>
 
 #include "gardener.h"
+
+struct Bud
+{
+    QVector3D position;
+    float strength;
+};
 
 class Fertilizer
 {
@@ -15,12 +22,16 @@ public:
 
     void setup(Gardener* gardener);
 
+    int numberOfNutrients;
+    int randomSeed;
+
 protected:
-    virtual float compute(QVector3D position) = 0;
-
-
-private:
+    QVector<QVector3D> seeds;     // start growing
+    QVector<QVector3D> nutrients; // hmm om nom nom
+    QVector<Bud> buds;      // nodes on the plant paths, potential branches
     Gardener* gardener;
+
+    virtual float compute(QVector3D position) = 0;
 };
 
 #endif // FERTILIZER_H

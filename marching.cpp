@@ -390,7 +390,6 @@ Marching::Marching()
     this->verticeBuffer = new QVector<QVector3D>();
     this->normalsBuffer = new QVector<QVector3D>();
 
-    this->Sample = &Marching::Sample1; // or: Sample2, or Sample 3
     this->MarchCube = &Marching::MarchCube1; // or MarchCube2
 }
 Marching::~Marching()
@@ -509,9 +508,9 @@ float Marching::Sample3(float fX, float fY, float fZ)
 //This gradient can be used as a very accurate vertx normal for lighting calculations
 void Marching::GetNormal(QVector3D &rfNormal, float fX, float fY, float fZ)
 {
-    rfNormal.setX((this->*Sample)(fX-0.01f, fY, fZ) - (this->*Sample)(fX+0.01f, fY, fZ));
-    rfNormal.setY((this->*Sample)(fX, fY-0.01f, fZ) - (this->*Sample)(fX, fY+0.01f, fZ));
-    rfNormal.setZ((this->*Sample)(fX, fY, fZ-0.01f) - (this->*Sample)(fX, fY, fZ+0.01f));
+    rfNormal.setX(this->fertilizer->getStrength(QVector3D(fX-0.01f, fY, fZ)) - this->fertilizer->getStrength(QVector3D(fX+0.01f, fY, fZ)));
+    rfNormal.setY(this->fertilizer->getStrength(QVector3D(fX, fY-0.01f, fZ)) - this->fertilizer->getStrength(QVector3D(fX, fY+0.01f, fZ)));
+    rfNormal.setZ(this->fertilizer->getStrength(QVector3D(fX, fY, fZ-0.01f)) - this->fertilizer->getStrength(QVector3D(fX, fY, fZ+0.01f)));
     rfNormal.normalize();
 }
 
@@ -529,9 +528,10 @@ void Marching::MarchCube1(float fX, float fY, float fZ, float fScale)
     //Make a local copy of the values at the cube's corners
     for(iVertex = 0; iVertex < 8; iVertex++)
     {
-            afCubeValue[iVertex] = (this->*Sample)(fX + a2fVertexOffset[iVertex][0]*fScale,
-                                                   fY + a2fVertexOffset[iVertex][1]*fScale,
-                                                   fZ + a2fVertexOffset[iVertex][2]*fScale);
+        auto position = QVector3D(fX + a2fVertexOffset[iVertex][0]*fScale,
+                                  fY + a2fVertexOffset[iVertex][1]*fScale,
+                                  fZ + a2fVertexOffset[iVertex][2]*fScale);
+        afCubeValue[iVertex] = this->fertilizer->getStrength(position);
     }
 
     //Find which vertices are inside of the surface and which are outside
@@ -682,9 +682,10 @@ void Marching::MarchCube2(float fX, float fY, float fZ, float fScale)
     //Make a local copy of the cube's corner values
     for(iVertex = 0; iVertex < 8; iVertex++)
     {
-        afCubeValue[iVertex] = (this->*Sample)(asCubePosition[iVertex].x(),
-                                               asCubePosition[iVertex].y(),
-                                               asCubePosition[iVertex].z());
+        auto position = QVector3D(asCubePosition[iVertex].x(),
+                                  asCubePosition[iVertex].y(),
+                                  asCubePosition[iVertex].z());
+        afCubeValue[iVertex] = this->fertilizer->getStrength(position);
     }
 
     for(iTetrahedron = 0; iTetrahedron < 6; iTetrahedron++)
@@ -754,6 +755,11 @@ void Marching::Draw()
 
 
     glPopMatrix();
+}
+
+void Marching::setup(Fertilizer *fertilizer)
+{
+    this->fertilizer = fertilizer;
 }
 
 QVector<QVector3D>* Marching::getVertices()

@@ -11,12 +11,11 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    connect(ui->xSlider, SIGNAL(valueChanged(int)), ui->glFrame, SLOT(setXRotation(int)));
-    connect(ui->glFrame, SIGNAL(xRotationChanged(int)), ui->xSlider, SLOT(setValue(int)));
-    connect(ui->ySlider, SIGNAL(valueChanged(int)), ui->glFrame, SLOT(setYRotation(int)));
-    connect(ui->glFrame, SIGNAL(yRotationChanged(int)), ui->ySlider, SLOT(setValue(int)));
-    connect(ui->zSlider, SIGNAL(valueChanged(int)), ui->glFrame, SLOT(setZRotation(int)));
-    connect(ui->glFrame, SIGNAL(zRotationChanged(int)), ui->zSlider, SLOT(setValue(int)));
+    connect(ui->nutrientSlider, SIGNAL(valueChanged(int)), ui->glFrame, SLOT(setNutrientAmount(int)));
+    connect(ui->glFrame, SIGNAL(setNutrientAmount(int)), ui->nutrientSlider, SLOT(setValue(int)));
+
+    connect(ui->randomSeedSlider, SIGNAL(valueChanged(int)), ui->glFrame, SLOT(setRandomSeed(int)));
+    connect(ui->glFrame, SIGNAL(setRandomSeed(int)), ui->randomSeedSlider, SLOT(setValue(int)));
 
     connect(this->ui->actionAbout, SIGNAL(triggered()), this, SLOT(about()));
     connect(this->ui->actionExit, SIGNAL(triggered()), this, SLOT(close()));

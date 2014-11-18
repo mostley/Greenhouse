@@ -7,8 +7,10 @@
 
 #include "gardener.h"
 #include "fertilizer.h"
+#include "gardener.h"
 #include "marching.h"
 #include "triangle.h"
+#include "potatofertilizer.h"
 
 class QtModel;
 
@@ -26,14 +28,12 @@ public:
     void getTriangles(QVector<Triangle>* triangles);
 
 public slots:
-    void setXRotation(int angle);
-    void setYRotation(int angle);
-    void setZRotation(int angle);
+    void setNutrientAmount(int nutrientAmount);
+    void setRandomSeed(int randomSeed);
 
 signals:
-    void xRotationChanged(int angle);
-    void yRotationChanged(int angle);
-    void zRotationChanged(int angle);
+    void nutrientAmountChanged(int angle);
+    void randomSeedChanged(int angle);
 
 protected:
     void initializeGL();
@@ -44,18 +44,22 @@ protected:
 
 private:
     QtModel *model;
-    int xRot;
-    int yRot;
-    int zRot;
     QPoint lastPos;
     QColor qtGreen;
     QColor qtPurple;
+
+    float xRot;
+    float yRot;
+    float zRot;
 
     Marching* marching;
     Gardener* gardener;
     Fertilizer* fertilizer;
 
     void perspective(GLdouble fovy, GLdouble aspect, GLdouble zNear, GLdouble zFar);
+
+private slots:
+    void updateFertilizer();
 };
 
 #endif
