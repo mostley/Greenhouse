@@ -4,6 +4,8 @@
 #include <QGLWidget>
 #include <QVector>
 #include <QTimer>
+#include <QWheelEvent>
+#include <QDebug>
 
 #include "gardener.h"
 #include "fertilizer.h"
@@ -41,10 +43,9 @@ protected:
     void resizeGL(int width, int height);
     void mousePressEvent(QMouseEvent *event);
     void mouseMoveEvent(QMouseEvent *event);
-    void mouseWheelEvent(QWheelEvent *event);
+    void wheelEvent(QWheelEvent *event);
 
 private:
-    QtModel *model;
     QPoint lastPos;
     QColor qtGreen;
     QColor qtPurple;
@@ -52,6 +53,7 @@ private:
     float xRot;
     float yRot;
     float zRot;
+    float zoom;
 
     Marching* marching;
     Gardener* gardener;

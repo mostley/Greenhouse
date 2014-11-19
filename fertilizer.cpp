@@ -115,6 +115,7 @@ void Fertilizer::draw()
             //drawSphere(this->nutrients[i], black, 1, 16, 16);
             //drawCube(this->nutrients[i], green, 1);
             glPushMatrix();
+            glTranslatef(-0.125f, -0.125f, -0.125f);
             glTranslatef(pos.x(), pos.y(), pos.z());
 
             sphere->draw();

@@ -358,7 +358,7 @@ void QtSphere::buildGeometry(int divisions, qreal scale)
 {
     Q_UNUSED(divisions);
 
-    qreal ld = logo_depth * scale;
+    qreal ld = 0.01f * scale;
 
     RectPrism cross(geom, ld, ld, ld);
 

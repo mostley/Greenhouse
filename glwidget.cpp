@@ -4,8 +4,6 @@
 #include <math.h>
 
 #include "glwidget.h"
-#include "qtmodel.h"
-
 #ifndef GL_MULTISAMPLE
 #define GL_MULTISAMPLE  0x809D
 #endif
@@ -13,13 +11,13 @@
 GLWidget::GLWidget(QWidget *parent)
     : QGLWidget(QGLFormat(QGL::SampleBuffers), parent)
 {
-    model = 0;
-    xRot = 0.0f;
-    yRot = 0.0f;
-    zRot = 0.0f;
+    this->xRot = 0.0f;
+    this->yRot = 0.0f;
+    this->zRot = 0.0f;
+    this->zoom = 1.0f;
 
-    qtGreen = QColor::fromCmykF(0.40, 0.0, 1.0, 0.0);
-    qtPurple = QColor::fromCmykF(0.39, 0.39, 0.0, 0.0);
+    this->qtGreen = QColor::fromCmykF(0.40, 0.0, 1.0, 0.0);
+    this->qtPurple = QColor::fromCmykF(0.39, 0.39, 0.0, 0.0);
 
     this->marching = new Marching();
     this->fertilizer = new PotatoFertilizer();
@@ -73,6 +71,7 @@ void GLWidget::setRandomSeed(int randomSeed)
         this->gardener->randomSeed = randomSeed;
         emit randomSeedChanged(randomSeed);
         this->gardener->init();
+        this->fertilizer->grow();
     }
 }
 
@@ -84,9 +83,6 @@ void GLWidget::initializeGL()
 
     qglClearColor(qtPurple.dark());
     glClearDepth( 1.0 );
-
-    model = new QtModel(64, 1.0f);
-    model->setColor(qtGreen.dark());
 
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_CULL_FACE);
@@ -119,12 +115,12 @@ void GLWidget::paintGL()
     glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
     glLoadIdentity();
 
-    glTranslatef(0.0, 0.0, -1.0);
+    glTranslatef(0.0, 0.0, -1.0f);
+    qDebug() << this->zoom;
+    glScalef(this->zoom, this->zoom, this->zoom);
     glRotatef(xRot / 16.0, 1.0, 0.0, 0.0);
     glRotatef(yRot / 16.0, 0.0, 1.0, 0.0);
     glRotatef(zRot / 16.0, 0.0, 0.0, 1.0);
-
-    //this->model->draw();
 
     if (this->fertilizer != NULL) {
         this->fertilizer->draw();
@@ -207,10 +203,10 @@ void GLWidget::mouseMoveEvent(QMouseEvent *event)
     lastPos = event->pos();
 }
 
-void GLWidget::mouseWheelEvent(QWheelEvent *event)
+void GLWidget::wheelEvent(QWheelEvent* event)
 {
-    auto dx = event->angleDelta();
-    //TODO zoom
+    auto delta = event->angleDelta();
+    this->zoom += delta.ry()/100.0f;
 }
 
 void GLWidget::getTriangles(QVector<Triangle>* triangles)
