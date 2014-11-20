@@ -3,13 +3,25 @@
 
 #include <QVector>
 #include <QVector3D>
+#include <QtMath>
 
 #include "gardener.h"
 
 struct Bud
 {
     QVector3D position;
+    QVector3D normal;
     float strength;
+};
+
+class Seed
+{
+public:
+    Seed();
+    Seed(QVector3D position);
+
+    QVector3D position;
+    QVector<Bud> buds;      // nodes on the plant paths, potential branches
 };
 
 class Fertilizer
@@ -25,13 +37,14 @@ public:
     void setup(Gardener* gardener);
 
     int numberOfNutrients;
+    float nutrientRadius;
+    float budStepSize;
     bool drawNutrients;
     bool drawSeeds;
 
 protected:
-    QVector<QVector3D> seeds;     // start growing
+    QVector<Seed> seeds;     // start growing
     QVector<QVector3D> nutrients; // hmm om nom nom
-    QVector<Bud> buds;      // nodes on the plant paths, potential branches
     Gardener* gardener;
 
     virtual float compute(QVector3D position) = 0;
