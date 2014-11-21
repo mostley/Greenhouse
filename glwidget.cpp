@@ -21,7 +21,7 @@ GLWidget::GLWidget(QWidget *parent)
 
     this->marching = new Marching();
     this->fertilizer = new PotatoFertilizer();
-    this->gardener = new Gardener(0.5, 0.5, 0.5);
+    this->gardener = new Gardener(10.0f, 10.0f, 10.0f);
     this->fertilizer->setup(this->gardener);
 
     QTimer *timer = new QTimer(this);
@@ -42,6 +42,13 @@ QSize GLWidget::minimumSizeHint() const
 QSize GLWidget::sizeHint() const
 {
     return QSize(400, 400);
+}
+
+void GLWidget::updateGL()
+{
+    QGLWidget::updateGL();
+
+    this->fertilizer->update();
 }
 
 static void qNormalizeAngle(int &angle)
@@ -73,6 +80,13 @@ void GLWidget::setRandomSeed(int randomSeed)
         this->gardener->init();
         this->fertilizer->grow();
     }
+}
+
+void GLWidget::setBudStrengthMultiplier(int budStrengthMultiplierPromille)
+{
+    auto budStrengthMultiplier = budStrengthMultiplierPromille / 10000.0f;
+    this->fertilizer->budStrengthMultiplier = budStrengthMultiplier;
+    this->fertilizer->grow();
 }
 
 void GLWidget::initializeGL()
@@ -116,7 +130,6 @@ void GLWidget::paintGL()
     glLoadIdentity();
 
     glTranslatef(0.0, 0.0, -1.0f);
-    qDebug() << this->zoom;
     glScalef(this->zoom, this->zoom, this->zoom);
     glRotatef(xRot / 16.0, 1.0, 0.0, 0.0);
     glRotatef(yRot / 16.0, 0.0, 1.0, 0.0);

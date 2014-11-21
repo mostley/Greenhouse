@@ -17,6 +17,8 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->randomSeedSlider, SIGNAL(valueChanged(int)), ui->glFrame, SLOT(setRandomSeed(int)));
     connect(ui->glFrame, SIGNAL(randomSeedChanged(int)), ui->randomSeedSlider, SLOT(setValue(int)));
 
+    connect(ui->budStrengthPromileMultiplierSlider, SIGNAL(valueChanged(int)), ui->glFrame, SLOT(setBudStrengthMultiplier(int)));
+
     connect(this->ui->actionAbout, SIGNAL(triggered()), this, SLOT(about()));
     connect(this->ui->actionExit, SIGNAL(triggered()), this, SLOT(close()));
 }

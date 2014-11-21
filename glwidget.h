@@ -32,6 +32,7 @@ public:
 public slots:
     void setNutrientAmount(int nutrientAmount);
     void setRandomSeed(int randomSeed);
+    void setBudStrengthMultiplier(int budStrengthMultiplierPromille);
 
 signals:
     void nutrientAmountChanged(int angle);
@@ -60,6 +61,7 @@ private:
     Fertilizer* fertilizer;
 
     void perspective(GLdouble fovy, GLdouble aspect, GLdouble zNear, GLdouble zFar);
+    void updateGL();
 };
 
 #endif

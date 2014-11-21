@@ -12,6 +12,7 @@ public:
     PotatoFertilizer();
 
     void grow();
+    void update();
 
 protected:
     float compute(QVector3D position);

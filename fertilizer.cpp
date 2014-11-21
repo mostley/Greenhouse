@@ -91,6 +91,7 @@ Fertilizer::Fertilizer()
     this->numberOfNutrients = 100;
     this->nutrientRadius = 0.1f;
     this->budStepSize = 0.2f;
+    this->budStrengthMultiplier = 0.1f;
 }
 
 float Fertilizer::getStrength(QVector3D position)
