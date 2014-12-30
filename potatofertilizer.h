@@ -10,6 +10,7 @@ class PotatoFertilizer : public Fertilizer
 {
 public:
     PotatoFertilizer();
+    ~PotatoFertilizer();
 
     void grow();
     void update();

@@ -6,16 +6,25 @@
 #include "fertilizer.h"
 #include "qtmodel.h"
 
+Bud::Bud(QVector3D position)
+{
+    this->children = 0;
+    this->position = position;
+    this->normal = QVector3D(0,0,0);
+    this->strength = 1.0;
+    this->nutrients = QVector<QVector3D>();
+}
+
 Seed::Seed()
 {
     this->position = QVector3D(0.0f, 0.0f, 0.0f);
-    this->buds = QVector<Bud>();
+    this->buds = QVector<Bud*>();
 }
 
 Seed::Seed(QVector3D position)
 {
     this->position = position;
-    this->buds = QVector<Bud>();
+    this->buds = QVector<Bud*>();
 }
 
 void drawCube(QVector3D offset, QColor color, float scale)
@@ -90,7 +99,7 @@ Fertilizer::Fertilizer()
     this->drawNutrients = true;
     this->numberOfNutrients = 100;
     this->nutrientRadius = 0.1f;
-    this->budStepSize = 0.2f;
+    this->budStepSize = 0.1f;
     this->budStrengthMultiplier = 0.1f;
 }
 
@@ -109,7 +118,7 @@ void Fertilizer::draw()
     if (this->drawSeeds) {
         glColor3i(0, 0, 0);
         for (int i=0; i<this->seeds.size(); i++) {
-            auto pos = this->seeds[i].position;
+            auto pos = this->seeds[i]->position;
 
             //drawSphere(this->seeds[i], black, 1, 16, 16);
             glPushMatrix();

@@ -4,7 +4,14 @@
 
 PotatoFertilizer::PotatoFertilizer()
 {
-    seeds.append(QVector3D(0.0f, 0.0f, 0.0f));
+    this->seeds.append(new Seed(QVector3D(0.0f, 0.0f, 0.0f)));
+}
+
+PotatoFertilizer::~PotatoFertilizer()
+{
+    for (int n = 0; n < this->seeds.size(); n++) {
+        delete this->seeds[n];
+    }
 }
 
 void PotatoFertilizer::grow()
@@ -17,7 +24,10 @@ void PotatoFertilizer::grow()
     }
 
     for (int n = 0; n < this->seeds.size(); n++) {
-        this->seeds[n].buds.clear();
+        for (int i = 0; i < this->seeds[n]->buds.size(); i++) {
+            delete this->seeds[n]->buds[i];
+        }
+        this->seeds[n]->buds.clear();
     }
 }
 
@@ -28,15 +38,13 @@ void PotatoFertilizer::update()
     }
 
     for (int n = 0; n < this->seeds.size(); n++) {
-        auto seed = &(this->seeds[n]);
+        Seed* seed = this->seeds[n];
 
-        auto connections = QHash<Bud*, QVector<QVector3D>>();
-        auto seedBud = Bud();
-        seedBud.position = seed->position;
-        seedBud.normal = QVector3D(0,0,0);
-        seedBud.strength = 1.0;
+        auto connected_buds = QVector<Bud*>();
+
+        Bud* seedBud = new Bud(seed->position);
         if (seed->buds.size() == 0) {
-            connections.insert(&seedBud, QVector<QVector3D>());
+            connected_buds.append(seedBud);
         }
 
         for (int i = 0; i < this->nutrients.size(); i++) {
@@ -44,17 +52,17 @@ void PotatoFertilizer::update()
 
             if (seed->buds.size() == 0) {
                 //TODO ask gardener if possible (wall in between)
-                connections[&seedBud].append(nutrient);
+                seedBud->nutrients.append(nutrient);
             } else {
                 for (int j=0; j<seed->buds.size(); j++) {
-                    auto bud = &(seed->buds[j]);
+                    Bud* bud = seed->buds[j];
 
                     if (bud->children > 0) {
                         continue;
                     }
 
-                    if (!connections.contains(bud)) {
-                        connections.insert(bud, QVector<QVector3D>());
+                    if (!connected_buds.contains(bud)) {
+                        connected_buds.append(bud);
                     }
 
                     auto direction = (bud->position - nutrient).normalized();
@@ -62,7 +70,7 @@ void PotatoFertilizer::update()
                     auto angle = qAcos(dotProduct / (direction.length() * bud->normal.length()));
                     if (angle < 45.0f)
                     {
-                        connections[bud].append(nutrient);
+                        bud->nutrients.append(nutrient);
 
                         break;
                     }
@@ -71,9 +79,14 @@ void PotatoFertilizer::update()
         }
 
         auto deadNutrients = QVector<QVector3D>();
-        for (int i=0; i<connections.keys().size(); i++) {
-            auto bud = connections.keys()[i];
-            auto listOfNutrients = connections[bud];
+        for (int i=0; i<connected_buds.size(); i++) {
+            auto bud = connected_buds[i];
+
+            QVector<QVector3D> listOfNutrients = bud->nutrients;
+
+            if (listOfNutrients.size() == 0) {
+                continue;
+            }
 
             auto direction = QVector3D(0,0,0);
             for (int j=0; j<listOfNutrients.size(); j++) {
@@ -81,16 +94,15 @@ void PotatoFertilizer::update()
             }
             direction.normalize();
 
-            auto newBud = Bud();
-            newBud.position = bud->position + direction * this->budStepSize;
-            newBud.normal = direction;
-            newBud.strength = bud->strength;
+            auto newBud = new Bud(bud->position + direction * this->budStepSize);
+            newBud->normal = direction;
+            newBud->strength = bud->strength;
             seed->buds.append(newBud);
             bud->children += 1;
 
             for (int j=0; j<listOfNutrients.size(); j++) {
                 auto nutrient = listOfNutrients[j];
-                if ((newBud.position - nutrient).length() < this->nutrientRadius) {
+                if ((newBud->position - nutrient).length() < this->nutrientRadius) {
                     deadNutrients.append(nutrient); // consume the nutrient
                 }
             }
@@ -101,6 +113,8 @@ void PotatoFertilizer::update()
             auto index = this->nutrients.indexOf(deadNutrients.at(i));
             this->nutrients.remove(index);
         }
+
+        delete seedBud;
     }
 }
 
@@ -110,10 +124,12 @@ float PotatoFertilizer::compute(QVector3D position)
     float fDx, fDy, fDz;
 
     for (int n = 0; n < this->seeds.size(); n++) {
-        for (int i=0; i<this->seeds[n].buds.size(); i++) {
-            auto bud = this->seeds[n].buds[i];
-            auto sourcePosition = bud.position;
-            auto strength = bud.strength * 0.1f;//this->budStrengthMultiplier; // e.g. 0.5 - 1.5
+        auto seed = this->seeds[n];
+
+        for (int i=0; i<seed->buds.size(); i++) {
+            auto bud = seed->buds[i];
+            auto sourcePosition = bud->position;
+            auto strength = bud->strength * 0.1f;//this->budStrengthMultiplier; // e.g. 0.5 - 1.5
 
             fDx = position.x() - sourcePosition.x();
             fDy = position.y() - sourcePosition.y();

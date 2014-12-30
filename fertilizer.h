@@ -8,12 +8,16 @@
 
 #include "gardener.h"
 
-struct Bud
+class Bud
 {
+public:
+    Bud(QVector3D);
+
     QVector3D position;
     QVector3D normal;
     float strength;
     int children;
+    QVector<QVector3D> nutrients;
 };
 
 inline bool operator==(const Bud &e1, const Bud &e2)
@@ -37,7 +41,7 @@ public:
     Seed(QVector3D position);
 
     QVector3D position;
-    QVector<Bud> buds;      // nodes on the plant paths, potential branches
+    QVector<Bud*> buds;      // nodes on the plant paths, potential branches
 };
 
 class Fertilizer
@@ -59,10 +63,10 @@ public:
     float budStepSize;
     bool drawNutrients;
     bool drawSeeds;
-    bool budStrengthMultiplier;
+    float budStrengthMultiplier;
 
 protected:
-    QVector<Seed> seeds;     // start growing
+    QVector<Seed*> seeds;     // start growing
     QVector<QVector3D> nutrients; // hmm om nom nom
     Gardener* gardener;
 
